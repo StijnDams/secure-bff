@@ -4,7 +4,8 @@
 		"dev": "bun run --hot src/index.ts",
 		"db:gen": "drizzle-kit generate --dialect sqlite --schema ./src/models",
 		"db:migrate": "drizzle-kit migrate",
-		"db:init": "bun db:gen && bun db:migrate"
+		"db:seed": "bun run scripts/seed.ts",
+		"db:init": "bun db:gen && bun db:migrate && bun db:seed"
 	},
 	"dependencies": {
 		"drizzle-orm": "^0.38.3",

@@ -1,6 +1,6 @@
 import type { Context, Next } from "hono";
 import * as jose from "jose";
-import { env } from "@/config";
+import { env } from "@/config/env";
 
 const JWKS = jose.createRemoteJWKSet(
 	new URL(`https://${env.AUTH0_DOMAIN}/.well-known/jwks.json`),
