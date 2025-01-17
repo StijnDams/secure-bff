@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 
 export default function Login() {
 	return (
