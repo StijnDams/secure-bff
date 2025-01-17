@@ -145,6 +145,13 @@ app.get("/logout", async (c) => {
 		})
 		.where(eq(sessions.id, session.id));
 
+	// Remove the session cookie
+	deleteCookie(c, "sessionID", {
+		path: "/",
+		secure: true,
+		httpOnly: true,
+	});
+
 	// Redirect to Auth0 logout
 	const logoutUrl = new URL(`${AUTH_ISSUER}/logout`);
 	logoutUrl.searchParams.append("client_id", AUTH_CLIENT_ID);
