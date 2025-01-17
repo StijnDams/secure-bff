@@ -1,0 +1,10 @@
+{
+	"include": ["src"],
+	"compilerOptions": {
+		"strict": true,
+		"jsx": "react-jsx",
+		"jsxImportSource": "hono/jsx",
+		"noImplicitAny": false,
+    
+	}
+}
