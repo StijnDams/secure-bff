@@ -26,6 +26,11 @@ export const getProductHandler = async (c: Context) => {
 };
 
 export const deleteProductHandler = async (c: Context) => {
+	const token = c.get("access_token");
+	if (!token.permissions.includes("delete:products")) {
+		c.status(403);
+		return c.json({ error: "Forbidden" });
+	}
 	await deleteProductById(Number(c.req.param("id")));
-	return c.status(204);
+	return c.json({ message: "Product deleted" });
 };

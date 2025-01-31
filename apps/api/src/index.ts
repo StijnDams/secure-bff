@@ -13,6 +13,6 @@ app.get("/health", (c) => c.json({ status: "ok" }));
 app.use("/api/*", authMiddleware);
 
 // API routes
-app.route("/api/products", productsRouter);
+app.route("/api", productsRouter);
 
 export default app;

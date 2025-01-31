@@ -9,6 +9,7 @@ import invariant from "tiny-invariant";
 import { db } from "./db/db";
 import { sessions } from "./db/schema";
 import { eq } from "drizzle-orm";
+import { decode } from "hono/jwt";
 
 const app = new Hono<{
 	Variables: {
@@ -19,9 +20,11 @@ const app = new Hono<{
 const AUTH_ISSUER = process.env.AUTH_ISSUER;
 const AUTH_CLIENT_ID = process.env.AUTH_CLIENT_ID;
 const AUTH_CLIENT_SECRET = process.env.AUTH_CLIENT_SECRET;
+const AUTH_AUDIENCE = process.env.AUTH_AUDIENCE;
 invariant(AUTH_ISSUER, "AUTH_ISSUER is required");
 invariant(AUTH_CLIENT_ID, "AUTH_CLIENT_ID is required");
 invariant(AUTH_CLIENT_SECRET, "AUTH_CLIENT_SECRET is required");
+invariant(AUTH_AUDIENCE, "AUTH_AUDIENCE is required");
 
 app.use(
 	"*",
@@ -69,6 +72,7 @@ app.get("/login", async (c) => {
 	authUrl.searchParams.append("scope", "openid profile email");
 	authUrl.searchParams.append("code_challenge", challenge);
 	authUrl.searchParams.append("code_challenge_method", "S256");
+	authUrl.searchParams.append("audience", AUTH_AUDIENCE);
 
 	return c.redirect(authUrl.toString());
 });
@@ -166,6 +170,29 @@ app.get("/me", requireAuth, async (c) => {
 		id: session.userId,
 		email: session.userEmail,
 		name: session.userName,
+	});
+});
+
+app.all("/api/*", requireAuth, async (c) => {
+	const session = c.get("session") as Session;
+	const url = new URL(c.req.url);
+	const targetUrl = `http://localhost:3002${url.pathname}`;
+	const headers = new Headers(c.req.raw.headers);
+	headers.set("Authorization", `Bearer ${session.accessToken}`);
+
+	// Forward the request to the target API
+	const response = await fetch(targetUrl, {
+		method: c.req.method,
+		headers,
+		body: ["GET", "HEAD"].includes(c.req.method)
+			? null
+			: await c.req.arrayBuffer(),
+	});
+
+	// Return the proxied response
+	return new Response(response.body, {
+		status: response.status,
+		headers: response.headers,
 	});
 });
 
