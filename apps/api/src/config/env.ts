@@ -1,8 +1,7 @@
-import { config } from "dotenv";
+import { config as loadEnv } from "dotenv";
 import invariant from "tiny-invariant";
 
-// Load environment variables
-config();
+loadEnv();
 
 function getEnvVar(key: string): string {
 	const value = process.env[key];

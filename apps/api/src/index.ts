@@ -6,13 +6,13 @@ import productsRouter from "./routes/products.js";
 
 const app = new Hono();
 
-// Health check route (no auth required)
-app.get("/health", (c) => c.json({ status: "ok" }));
-
-// Apply auth middleware to all /api routes
+// Middleware
 app.use("/api/*", authMiddleware);
 
-// API routes
-app.route("/api/products", productsRouter);
+// Health check endpoint
+app.get("/health", (c) => c.json({ status: "ok" }));
+
+// Routes
+app.route("/api", productsRouter);
 
 export default app;
