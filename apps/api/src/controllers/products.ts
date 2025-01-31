@@ -1,5 +1,6 @@
 import {
 	getAllProducts,
+	getAllProductsWithReviews,
 	createProduct,
 	getProductById,
 	deleteProductById,
@@ -9,6 +10,11 @@ import type { Context } from "hono";
 export const getProductsHandler = async (c: Context) => {
 	const products = await getAllProducts();
 	return c.json(products);
+};
+
+export const getProductsWithReviewsHandler = async (c: Context) => {
+	const productsWithReviews = await getAllProductsWithReviews();
+	return c.json(Object.values(productsWithReviews));
 };
 
 export const createProductHandler = async (c: Context) => {

@@ -2,7 +2,21 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-export async function getProducts(): Promise<any> {
+interface Review {
+	id: number;
+	userId: string;
+	content: string;
+}
+
+interface Product {
+	id: number;
+	name: string;
+	price: number;
+	description?: string;
+	reviews: Review[];
+}
+
+export async function getProducts(): Promise<Product[]> {
 	const response = await fetch("http://localhost:3001/api/products", {
 		credentials: "include",
 	});
